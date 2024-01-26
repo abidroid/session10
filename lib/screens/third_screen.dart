@@ -16,6 +16,8 @@ class _ThirdScreenState extends State<ThirdScreen> {
   late int num1, num2;
   int result = 0;
 
+  String passwordMessage = 'Type a password';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,9 +92,50 @@ class _ThirdScreenState extends State<ThirdScreen> {
             }, child: const Text('Clear')),
 
             Text(result.toString()),
+
+            TextFormField(
+              decoration: InputDecoration(
+                hintText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (String text){
+
+                setState(() {
+
+                  if( text.isEmpty){
+                    passwordMessage = 'Please Type a Password';
+                  }
+                  else if( text.length <= 6){
+                    passwordMessage = 'Weak Password';
+                  }
+                  else if( text.length <= 10){
+                    passwordMessage = 'Average Password';
+                  }else if( text.length > 10){
+
+                    if( validateEmail(text)){
+                      passwordMessage = 'Valid Password';
+                    }else{
+                      passwordMessage =  'Invalid Password';
+                    }
+
+                  }
+                });
+
+              },
+            ),
+
+            const SizedBox(height: 16,),
+            Text(passwordMessage),
+
           ],),
         ),
       ),
     );
+  }
+
+  bool validateEmail(String value){
+    String  pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(value);
   }
 }
